@@ -34,13 +34,47 @@
   margin-left: 239px;
   padding: 20px 0 0 0;
   list-style: none;
-  label {
-    cursor: pointer;
-    margin-left: 20px;
-  }
+
   input {
-    cursor: pointer;
+    display: none;
   }
+  input:checked {
+    & + label::before {
+      content: "\2713";
+      background-color: #000000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.5s ease-out;
+      transform: scale(1.1);
+    }
+  }
+
+  label {
+    display: flex;
+    cursor: pointer;
+    &::before {
+      content: "";
+      border: 0.05em solid black;
+      height: 1em;
+      width: 1em;
+      border-radius: 5px;
+      margin-right: 10px;
+      transition: all 0.5s ease-out;
+    }
+    &:hover {
+      &::before {
+        background-color: rgb(0, 0, 0);
+        content: "\2713";
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
   .task {
     max-width: 529px;
     padding: 10px;
