@@ -1,11 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "./index.scss";
 function TodoList() {
-  const [task, setTask] = React.useState(() => {
-    const saved = localStorage.getItem("task");
-    const initialValue = JSON.parse(saved);
-    return initialValue || "";
-  });
+  const [task, setTask] = React.useState([]);
   const [newTask, setNewTask] = React.useState("");
 
   const inputRef = useRef(null);
@@ -14,25 +10,26 @@ function TodoList() {
     inputRef.current.focus();
   }, [newTask]);
 
-  function handleInputChange(e) {
-    const target = e.target;
-    setNewTask(target.value);
-  }
-
   function addTask() {
-    newTask.trim() != ""
-      ? setTask((task) => [...task, newTask]) & setNewTask("")
-      : "";
+    if (newTask.trim()) {
+      setTask([...task, { text: newTask, completed: false }]);
+    }
+    setNewTask("");
   }
-
   const deleteTask = (index) => {
     const updateTasks = task.filter((_, i) => i != index);
     setTask(updateTasks);
   };
 
-  useEffect(() => {
-    localStorage.setItem("task", JSON.stringify(task));
-  }, [task]);
+  const taskCompletion = (index) => {
+    const newTasks = task.map((task, i) => {
+      if (i === index) {
+        return { ...task, completed: !task.completed };
+      }
+      return task;
+    });
+    setTask(newTasks);
+  };
 
   return (
     <>
@@ -42,7 +39,7 @@ function TodoList() {
           type="text"
           placeholder="Какую задачу хотите решить сегодня...."
           value={newTask}
-          onChange={handleInputChange}
+          onChange={(e) => setNewTask(e.target.value)}
         />
         <button onClick={addTask}>Добавить</button>
       </div>
@@ -50,8 +47,17 @@ function TodoList() {
         {task.map((task, index) => (
           <li className="task" key={index}>
             <div>
-              <input className="task__checkbox" type="checkbox" id={index} />
-              <label htmlFor={index}>{task}</label>
+              <input
+                onClick={() => taskCompletion(index)}
+                className="task__checkbox"
+                type="checkbox"
+                id={index}
+              />
+              <label htmlFor={index}>
+                <p className={task.completed ? "task__strikethrough" : ""}>
+                  {task.text}
+                </p>
+              </label>
             </div>
             <button className="task__delete" onClick={() => deleteTask(index)}>
               Удалить
@@ -59,6 +65,23 @@ function TodoList() {
           </li>
         ))}
       </ul>
+      <hr />
+      <div className="task__completed">
+        <h3>Завершенные задачи на сегодня: </h3>
+        <ul>
+          {task.map((task, index) =>
+            task.completed ? (
+              <li key={index}>
+                <div>
+                  <p>{task.text}</p>
+                </div>
+              </li>
+            ) : (
+              ""
+            )
+          )}
+        </ul>
+      </div>
     </>
   );
 }
