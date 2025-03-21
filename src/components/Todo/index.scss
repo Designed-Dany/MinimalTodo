@@ -110,7 +110,6 @@ hr {
   display: flex;
   justify-content: center;
   flex-direction: column;
-
   h3 {
     font-size: 20px;
     color: gray;
@@ -118,5 +117,35 @@ hr {
   ul {
     color: gray;
     list-style: none;
+  }
+  p {
+    color: gray;
+  }
+}
+
+.task__show {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  &_down {
+    border: none;
+    cursor: pointer;
+    transform: rotate(0deg);
+    transition: all 0.2s ease-out;
+  }
+  &_up {
+    border: none;
+    cursor: pointer;
+    transform: rotate(-180deg);
+    transition: all 0.2s ease-out;
+  }
+}
+
+.old-task {
+  margin-left: 50px;
+  &_position {
+    display: flex;
+    column-gap: 20px;
+    margin: 5px 0px 5px 0px;
   }
 }

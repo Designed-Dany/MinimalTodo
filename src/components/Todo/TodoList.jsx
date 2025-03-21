@@ -3,9 +3,9 @@ import "./index.scss";
 function TodoList() {
   const [task, setTask] = React.useState([]);
   const [newTask, setNewTask] = React.useState("");
-
+  const [toggleShow, setToggleShow] = React.useState(false);
   const inputRef = useRef(null);
-
+  let completedTask = [];
   useEffect(() => {
     inputRef.current.focus();
   }, [newTask]);
@@ -29,6 +29,14 @@ function TodoList() {
       return task;
     });
     setTask(newTasks);
+    completedTask.push(task);
+    console.log(completedTask);
+    setTimeout(() => deleteTask(index), 1000);
+    setTimeout(() => console.log(completedTask), 4000);
+  };
+
+  const showTask = () => {
+    setToggleShow(!toggleShow);
   };
 
   return (
@@ -67,19 +75,35 @@ function TodoList() {
       </ul>
       <hr />
       <div className="task__completed">
-        <h3>Завершенные задачи на сегодня: </h3>
-        <ul>
-          {task.map((task, index) =>
-            task.completed ? (
-              <li key={index}>
-                <div>
-                  <p>{task.text}</p>
-                </div>
-              </li>
-            ) : (
-              ""
-            )
-          )}
+        <div className="task__show">
+          <button
+            onClick={showTask}
+            className={toggleShow ? "task__show_down" : "task__show_up"}
+          >
+            <img
+              width={30}
+              height={30}
+              src="/src/components/Todo/down.png"
+              alt=""
+            />
+          </button>
+          <h3>Завершенные задачи на сегодня: </h3>
+        </div>
+        <ul className="old-task">
+          {toggleShow
+            ? completedTask.map((task, index) =>
+                task.completed ? (
+                  <li key={index}>
+                    <div className="old-task_position">
+                      &#10026;
+                      <p>{task.text}</p>
+                    </div>
+                  </li>
+                ) : (
+                  ""
+                )
+              )
+            : ""}
         </ul>
       </div>
     </>
