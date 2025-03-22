@@ -57,23 +57,6 @@
   label {
     display: flex;
     cursor: pointer;
-    &::before {
-      content: "";
-      border: 0.05em solid black;
-      height: 1em;
-      width: 1em;
-      border-radius: 5px;
-      margin-right: 10px;
-      transition: all 0.5s ease-out;
-    }
-    &:hover {
-      &::before {
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
   }
 
   .task {

@@ -1,11 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import "./index.scss";
 function TodoList() {
-  const [task, setTask] = React.useState([]);
+  const [task, setTask] = React.useState(() => {
+    const storedList = JSON.parse(localStorage.getItem("task"));
+    return storedList || "";
+  });
   const [newTask, setNewTask] = React.useState("");
   const [toggleShow, setToggleShow] = React.useState(false);
   const inputRef = useRef(null);
-  let completedTask = [];
+
   useEffect(() => {
     inputRef.current.focus();
   }, [newTask]);
@@ -16,11 +19,12 @@ function TodoList() {
     }
     setNewTask("");
   }
+
   const deleteTask = (index) => {
     const updateTasks = task.filter((_, i) => i != index);
     setTask(updateTasks);
   };
-
+  /// выше этого текста не обращаем внимание
   const taskCompletion = (index) => {
     const newTasks = task.map((task, i) => {
       if (i === index) {
@@ -29,11 +33,11 @@ function TodoList() {
       return task;
     });
     setTask(newTasks);
-    completedTask.push(task);
-    console.log(completedTask);
-    setTimeout(() => deleteTask(index), 1000);
-    setTimeout(() => console.log(completedTask), 4000);
   };
+
+  useEffect(() => {
+    localStorage.setItem("task", JSON.stringify(task));
+  }, [task]);
 
   const showTask = () => {
     setToggleShow(!toggleShow);
@@ -55,14 +59,11 @@ function TodoList() {
         {task.map((task, index) => (
           <li className="task" key={index}>
             <div>
-              <input
-                onClick={() => taskCompletion(index)}
-                className="task__checkbox"
-                type="checkbox"
-                id={index}
-              />
               <label htmlFor={index}>
-                <p className={task.completed ? "task__strikethrough" : ""}>
+                <p
+                  onClick={() => taskCompletion(index)}
+                  className={task.completed ? "task__strikethrough" : ""}
+                >
                   {task.text}
                 </p>
               </label>
@@ -91,7 +92,7 @@ function TodoList() {
         </div>
         <ul className="old-task">
           {toggleShow
-            ? completedTask.map((task, index) =>
+            ? task.map((task, index) =>
                 task.completed ? (
                   <li key={index}>
                     <div className="old-task_position">
